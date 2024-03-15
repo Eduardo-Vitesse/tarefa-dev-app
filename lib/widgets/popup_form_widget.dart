@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tarefa_dev_app/data/period.dart';
-import 'package:tarefa_dev_app/pages/settings_page.dart';
 import 'package:tarefa_dev_app/shared/constants/boxes.dart';
 import 'package:tarefa_dev_app/shared/context/update_page.dart';
 
@@ -10,17 +10,18 @@ import '../shared/mixins/popup_fields_mixin.dart';
 import '../shared/theme/app_colors.dart';
 import '../shared/theme/app_text_styles.dart';
 
-class PopUpWidget extends StatefulWidget {
+class PopupFormWidget extends StatefulWidget {
   final Period? period;
   final int? index;
 
-  const PopUpWidget({super.key, this.period, this.index});
+  const PopupFormWidget({super.key, this.period, this.index});
 
   @override
-  State<PopUpWidget> createState() => _PopUpWidgetState();
+  State<PopupFormWidget> createState() => _PopupFormWidgetState();
 }
 
-class _PopUpWidgetState extends State<PopUpWidget> with PopupFieldsMixin {
+class _PopupFormWidgetState extends State<PopupFormWidget>
+    with PopupFieldsMixin {
   final InputBorder border = OutlineInputBorder(
     borderRadius: BorderRadius.circular(7),
     borderSide: const BorderSide(
@@ -34,12 +35,6 @@ class _PopUpWidgetState extends State<PopUpWidget> with PopupFieldsMixin {
   void refreshPage() {
     Provider.of<UpdatePage>(context, listen: false).getUpdatePage();
     Navigator.of(context).pop();
-  }
-
-  void navigate() {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-      return const SettingsPage();
-    }));
   }
 
   void handleSave() {
@@ -70,14 +65,6 @@ class _PopUpWidgetState extends State<PopUpWidget> with PopupFieldsMixin {
       ),
     );
     refreshPage();
-  }
-
-  void handleDelete() {
-    if (widget.index != null) {
-      var ableToDelete = widget.index;
-      boxPeriods.deleteAt(ableToDelete!);
-      refreshPage();
-    }
   }
 
   @override
@@ -142,8 +129,8 @@ class _PopUpWidgetState extends State<PopUpWidget> with PopupFieldsMixin {
                     autofocus: false,
                     autocorrect: false,
                     decoration: InputDecoration(
-                      label: Text('Nomeie seu período',
-                          style: AppTextStyles.inputLabelText),
+                      hintText: 'Nomeie seu período',
+                      hintStyle: AppTextStyles.inputLabelText,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(5),
                         borderSide: BorderSide.none,
@@ -158,9 +145,7 @@ class _PopUpWidgetState extends State<PopUpWidget> with PopupFieldsMixin {
                   width: size.width,
                   height: 160,
                   decoration: BoxDecoration(
-                    color: widget.index == null
-                        ? AppColors.grey100
-                        : AppColors.background,
+                    color: AppColors.grey100,
                     borderRadius: BorderRadius.circular(5),
                   ),
                   child: Padding(
@@ -178,7 +163,10 @@ class _PopUpWidgetState extends State<PopUpWidget> with PopupFieldsMixin {
                                 keyboardType: TextInputType.number,
                                 controller: periodStartValue,
                                 autofocus: false,
+                                maxLines: 1,
                                 decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 30),
                                   enabledBorder: border,
                                   focusedBorder: border,
                                   filled: true,
@@ -202,7 +190,10 @@ class _PopUpWidgetState extends State<PopUpWidget> with PopupFieldsMixin {
                                 keyboardType: TextInputType.number,
                                 controller: periodFinishedValue,
                                 autofocus: false,
+                                maxLines: 1,
                                 decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 30),
                                   enabledBorder: border,
                                   focusedBorder: border,
                                   filled: true,
@@ -270,18 +261,21 @@ class _PopUpWidgetState extends State<PopUpWidget> with PopupFieldsMixin {
                               keyboardType: TextInputType.number,
                               controller: periodGoalOneValue,
                               autofocus: false,
+                              maxLines: 1,
                               textAlign: TextAlign.center,
                               decoration: InputDecoration(
+                                contentPadding:
+                                    const EdgeInsets.symmetric(vertical: 10),
                                 enabledBorder: border,
                                 focusedBorder: border,
-                                label: Text(
-                                  'Un',
-                                  textAlign: TextAlign.center,
-                                  style: AppTextStyles.inputLabelText,
-                                ),
+                                hintText: 'Un',
+                                hintStyle: AppTextStyles.inputLabelText,
                                 filled: true,
                                 fillColor: AppColors.background,
                               ),
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly
+                              ],
                             ),
                           ),
                         ],
@@ -298,17 +292,21 @@ class _PopUpWidgetState extends State<PopUpWidget> with PopupFieldsMixin {
                               keyboardType: TextInputType.number,
                               controller: periodGoalTwoValue,
                               autofocus: false,
+                              maxLines: 1,
+                              textAlign: TextAlign.center,
                               decoration: InputDecoration(
+                                contentPadding:
+                                    const EdgeInsets.symmetric(vertical: 10),
                                 enabledBorder: border,
                                 focusedBorder: border,
-                                label: Text(
-                                  'Un',
-                                  textAlign: TextAlign.center,
-                                  style: AppTextStyles.inputLabelText,
-                                ),
+                                hintText: 'Un',
+                                hintStyle: AppTextStyles.inputLabelText,
                                 filled: true,
                                 fillColor: AppColors.background,
                               ),
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly
+                              ],
                             ),
                           ),
                         ],
@@ -334,25 +332,15 @@ class _PopUpWidgetState extends State<PopUpWidget> with PopupFieldsMixin {
                         ],
                       )
                     : Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          ElevatedButton(
-                            onPressed: handleDelete,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.delete,
-                            ),
-                            child: Text(
-                              'Excluir',
-                              style: AppTextStyles.buttonTextRegular,
-                            ),
-                          ),
                           ElevatedButton(
                             onPressed: () => handleUpdate(widget.index),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppColors.primary,
                             ),
                             child: Text(
-                              'Editar',
+                              'Salvar',
                               style: AppTextStyles.buttonTextRegular,
                             ),
                           ),

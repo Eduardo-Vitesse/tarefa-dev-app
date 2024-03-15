@@ -3,7 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:tarefa_dev_app/shared/constants/boxes.dart';
 import 'package:tarefa_dev_app/shared/context/update_page.dart';
 import 'package:tarefa_dev_app/widgets/period_item_widget.dart';
-import 'package:tarefa_dev_app/widgets/pop_up_widget.dart';
+import 'package:tarefa_dev_app/widgets/popup_detail_widget.dart';
+import 'package:tarefa_dev_app/widgets/popup_form_widget.dart';
 
 import '../data/period.dart';
 import '../shared/theme/app_colors.dart';
@@ -24,6 +25,7 @@ class _SettingsPageState extends State<SettingsPage> {
     var data = context.watch<UpdatePage>().isUpdated;
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         leading: const Icon(Icons.keyboard_arrow_left),
         title: Text('Configurações', style: AppTextStyles.heading),
@@ -59,8 +61,10 @@ class _SettingsPageState extends State<SettingsPage> {
                             showDialog(
                               context: context,
                               builder: (BuildContext context) {
-                                return PopUpWidget(
-                                    index: index, period: period);
+                                return PopupDetailWidget(
+                                  index: index,
+                                  period: period,
+                                );
                               },
                             );
                           },
@@ -73,25 +77,35 @@ class _SettingsPageState extends State<SettingsPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return const PopUpWidget();
-                        },
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary),
-                    child: Text(
-                      'Adicionar Período',
-                      style: AppTextStyles.buttonTextSmall,
+                  Container(
+                    width: 100,
+                    height: 24,
+                    constraints:
+                        const BoxConstraints(maxWidth: double.infinity),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      color: AppColors.primary,
+                    ),
+                    child: GestureDetector(
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return const PopupFormWidget();
+                          },
+                        );
+                      },
+                      child: Center(
+                        child: Text(
+                          'Adicionar Período',
+                          style: AppTextStyles.buttonTextSmall,
+                        ),
+                      ),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 65),
+              const SizedBox(height: 100),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [

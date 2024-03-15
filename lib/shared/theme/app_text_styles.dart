@@ -41,13 +41,12 @@ abstract class AppTextStyles {
   );
 
   static final buttonTextSmall = GoogleFonts.inter(
-    // fontSize: 10,
+    fontSize: 10,
     fontWeight: FontWeight.w600,
     color: AppColors.background,
   );
 
   static final buttonTextRegular = GoogleFonts.inter(
-    // fontSize: 12,
     fontWeight: FontWeight.bold,
     color: AppColors.background,
   );
